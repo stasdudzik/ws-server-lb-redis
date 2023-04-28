@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+# load balancer
+  lb:
+    image: haproxy_lb
+    ports:
+      - "8080:8080"
+  # our redis instance that will pull redis image
+  rds:
+    image: redis
+  # each of web-socket1 app instance will use the same image - "ws_app"
+  # APP_ID will be accessible in the app and we will use it to detect to which 
+  # instance we get connected to
+  web-socket1:
+    image: ws_app
+    environment:
+      - APP_ID=1111
+  web-socket2:
+    image: ws_app
+    environment:
+      - APP_ID=2222
+  web-socket3:
+    image: ws_app
+    environment:
+      - APP_ID=3333
