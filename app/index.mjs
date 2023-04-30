@@ -17,6 +17,7 @@ const publisher = redis.createClient({
 
 subscriber.on("subscribe", (channel, count) => {
   console.log(`Server ${APP_ID} subscribed successfully to livechat`);
+  console.log(`Channel: ${channel}, count: ${count}`);
   publisher.publish("livechat", "a message");
 });
 
@@ -26,8 +27,8 @@ subscriber.on("message", (channel, message) => {
       `Server ${APP_ID} received a message in channel ${channel} msg: ${message}`
     );
     connections.forEach((conn) => conn.send(`${APP_ID} : ${message}`));
-  } catch (ex) {
-    console.log("ERR::" + ex);
+  } catch (error) {
+    console.log("ERROR::" + error);
   }
 });
 
@@ -43,8 +44,7 @@ const websocket = new WebSocketServer({
 
 httpServer.listen(8080, () => console.log("Server listening on port 8080"));
 
-// when websocket request comes listen to it and get the connection
-
+// listen web socket connections and push it to array
 websocket.on("request", (request) => {
   const con = request.accept(null, request.origin);
   con.on("open", () => console.log("OPENED!"));
